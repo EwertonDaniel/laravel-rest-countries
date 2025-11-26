@@ -1,0 +1,52 @@
+{
+    "name": "ewertondaniel/laravel-rest-countries",
+    "description": "Laravel package to fetch country data from RestCountries API",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ewerton Daniel",
+            "email": "contact@ewertondaniel.work"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.0",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
+    "scripts": {
+        "test": "pest"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "EwertonDaniel\\RestCountries\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EwertonDaniel\\RestCountries\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EwertonDaniel\\RestCountries\\RestCountriesServiceProvider"
+            ],
+            "aliases": {
+                "RestCountries": "EwertonDaniel\\RestCountries\\Facades\\RestCountries"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
