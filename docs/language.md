@@ -22,8 +22,13 @@ $countries = RestCountries::getByLanguage('portuguese', [
 
 // Iterating over results
 foreach ($countries as $country) {
-    echo $country->name->common . "\n";
+    echo $country->name->common;
+    echo $country->languages->first()->name; // Portuguese
 }
+
+// Finding a specific language
+$portuguese = $country->languages->firstWhere('code', 'por');
+echo $portuguese->name; // Portuguese
 ```
 
 ## Request
@@ -67,22 +72,6 @@ GET https://restcountries.com/v3.1/lang/portuguese?fields=name,cca2,languages
     "languages": {
       "por": "Portuguese"
     }
-  },
-  {
-    "name": {
-      "common": "Angola",
-      "official": "Republic of Angola",
-      "nativeName": {
-        "por": {
-          "official": "República de Angola",
-          "common": "Angola"
-        }
-      }
-    },
-    "cca2": "AO",
-    "languages": {
-      "por": "Portuguese"
-    }
   }
 ]
 ```
@@ -91,3 +80,21 @@ GET https://restcountries.com/v3.1/lang/portuguese?fields=name,cca2,languages
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 10 countries speak Portuguese
+
+## Language DTO
+
+The `languages` property is a `Collection<Language>` where each `Language` has:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `code` | `string` | ISO 639-3 language code (e.g., `por`, `deu`) |
+| `name` | `string` | Language name (e.g., `Portuguese`, `German`) |
+
+```php
+// Example usage
+$country->languages->first()->code;                  // por
+$country->languages->first()->name;                  // Portuguese
+$country->languages->pluck('name')->toArray();       // ['Portuguese']
+$country->languages->firstWhere('code', 'por')->name; // Portuguese
+```

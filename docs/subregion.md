@@ -17,7 +17,14 @@ $countries = RestCountries::getBySubregion('western europe');
 $countries = RestCountries::getBySubregion('south america', [
     CountryField::Name,
     CountryField::Cca2,
+    CountryField::Capital,
 ]);
+
+// Iterating over results
+foreach ($countries as $country) {
+    echo $country->name->common;
+    echo $country->capital->first()?->name;
+}
 ```
 
 ## Request
@@ -63,19 +70,6 @@ GET https://restcountries.com/v3.1/subregion/western%20europe?fields=name,cca2
       }
     },
     "cca2": "DE"
-  },
-  {
-    "name": {
-      "common": "Netherlands",
-      "official": "Kingdom of the Netherlands",
-      "nativeName": {
-        "nld": {
-          "official": "Koninkrijk der Nederlanden",
-          "common": "Nederland"
-        }
-      }
-    },
-    "cca2": "NL"
   }
 ]
 ```
@@ -84,3 +78,4 @@ GET https://restcountries.com/v3.1/subregion/western%20europe?fields=name,cca2
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 8 countries in Western Europe, 14 in South America

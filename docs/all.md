@@ -20,6 +20,13 @@ $countries = RestCountries::getAll([
     CountryField::Capital,
     CountryField::Population,
 ]);
+
+// Iterating over results
+foreach ($countries as $country) {
+    echo $country->name->common;                  // Country name
+    echo $country->capital->first()?->name;       // Capital city
+    echo $country->languages->first()?->name;     // Primary language
+}
 ```
 
 ## Request
@@ -65,3 +72,4 @@ GET https://restcountries.com/v3.1/all?fields=name,cca2
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 250 countries

@@ -17,11 +17,13 @@ $countries = RestCountries::getByCodes(['DE', 'FR', 'BR']);
 $countries = RestCountries::getByCodes(['DE', 'FR', 'BR'], [
     CountryField::Name,
     CountryField::Cca2,
+    CountryField::Capital,
 ]);
 
 // Iterating over results
 foreach ($countries as $country) {
-    echo $country->name->common . "\n";
+    echo $country->name->common;
+    echo $country->capital->first()?->name;
 }
 ```
 

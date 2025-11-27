@@ -22,7 +22,8 @@ $countries = RestCountries::getByCapital('berlin', [
 
 // Accessing the first result
 $country = $countries->first();
-echo $country->capital[0]; // Berlin
+echo $country->capital->first()->name; // Berlin
+echo $country->capital->pluck('name')->toArray(); // ['Berlin']
 ```
 
 ## Request
@@ -56,3 +57,18 @@ GET https://restcountries.com/v3.1/capital/berlin?fields=name,cca2,capital
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+
+## Capital DTO
+
+The `capital` property is a `Collection<Capital>` where each `Capital` has:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `string` | Capital city name |
+
+```php
+// Example usage
+$country->capital->first()->name;                    // Berlin
+$country->capital->pluck('name')->implode(', ');     // Berlin
+(string) $country->capital->first();                 // Berlin (via __toString)
+```

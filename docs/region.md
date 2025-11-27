@@ -17,9 +17,16 @@ $countries = RestCountries::getByRegion('europe');
 $countries = RestCountries::getByRegion('europe', [
     CountryField::Name,
     CountryField::Cca2,
+    CountryField::Capital,
 ]);
 
 // Available regions: Africa, Americas, Asia, Europe, Oceania
+
+// Iterating over results
+foreach ($countries as $country) {
+    echo $country->name->common;
+    echo $country->capital->first()?->name;
+}
 ```
 
 ## Request
@@ -57,19 +64,6 @@ GET https://restcountries.com/v3.1/region/europe?fields=name,cca2
       }
     },
     "cca2": "DE"
-  },
-  {
-    "name": {
-      "common": "France",
-      "official": "French Republic",
-      "nativeName": {
-        "fra": {
-          "official": "République française",
-          "common": "France"
-        }
-      }
-    },
-    "cca2": "FR"
   }
 ]
 ```
@@ -78,3 +72,4 @@ GET https://restcountries.com/v3.1/region/europe?fields=name,cca2
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 53 countries in Europe

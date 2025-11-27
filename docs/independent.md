@@ -13,7 +13,7 @@ use EwertonDaniel\RestCountries\Enums\CountryField;
 // Search for independent countries (default)
 $countries = RestCountries::getIndependent();
 
-// Search for non-independent countries
+// Search for non-independent territories
 $countries = RestCountries::getIndependent(false);
 
 // With specific fields
@@ -22,6 +22,12 @@ $countries = RestCountries::getIndependent(true, [
     CountryField::Cca2,
     CountryField::Independent,
 ]);
+
+// Iterating over results
+foreach ($countries as $country) {
+    echo $country->name->common;
+    echo $country->independent ? 'Independent' : 'Territory';
+}
 ```
 
 ## Request
@@ -67,3 +73,4 @@ GET https://restcountries.com/v3.1/independent?status=true&fields=name,cca2
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 195 independent countries, 55 non-independent territories

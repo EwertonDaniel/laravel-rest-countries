@@ -6,27 +6,24 @@ namespace EwertonDaniel\RestCountries\Data;
 
 final readonly class CapitalInfo
 {
-    /**
-     * @param  float[]  $latlng
-     */
     public function __construct(
-        public array $latlng = [],
+        public Coordinates $coordinates,
     ) {}
 
     public static function fromArray(array $data): self
     {
         return new self(
-            latlng: $data['latlng'] ?? [],
+            coordinates: Coordinates::fromArray($data['latlng'] ?? []),
         );
     }
 
     public function getLatitude(): ?float
     {
-        return $this->latlng[0] ?? null;
+        return $this->coordinates->latitude;
     }
 
     public function getLongitude(): ?float
     {
-        return $this->latlng[1] ?? null;
+        return $this->coordinates->longitude;
     }
 }

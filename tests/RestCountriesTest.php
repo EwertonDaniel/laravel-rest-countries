@@ -3,7 +3,16 @@
 declare(strict_types=1);
 
 use EwertonDaniel\RestCountries\Contracts\RestCountriesInterface;
+use EwertonDaniel\RestCountries\Data\AltSpelling;
+use EwertonDaniel\RestCountries\Data\Border;
+use EwertonDaniel\RestCountries\Data\Capital;
+use EwertonDaniel\RestCountries\Data\Continent;
+use EwertonDaniel\RestCountries\Data\Coordinates;
 use EwertonDaniel\RestCountries\Data\Country;
+use EwertonDaniel\RestCountries\Data\Gini;
+use EwertonDaniel\RestCountries\Data\Language;
+use EwertonDaniel\RestCountries\Data\Timezone;
+use EwertonDaniel\RestCountries\Data\Tld;
 use EwertonDaniel\RestCountries\Enums\CountryField;
 use EwertonDaniel\RestCountries\Facades\RestCountries;
 use EwertonDaniel\RestCountries\RestCountries as RestCountriesClass;
@@ -335,7 +344,12 @@ test('country dto has all properties', function () {
     expect($country->name->common)->toBe('Germany');
     expect($country->name->official)->toBe('Federal Republic of Germany');
     expect($country->name->nativeName)->toHaveKey('deu');
-    expect($country->tld)->toBe(['.de']);
+
+    // TLD as Collection of Tld objects
+    expect($country->tld)->toBeInstanceOf(Collection::class);
+    expect($country->tld->first())->toBeInstanceOf(Tld::class);
+    expect($country->tld->first()->domain)->toBe('.de');
+
     expect($country->cca2)->toBe('DE');
     expect($country->ccn3)->toBe('276');
     expect($country->cca3)->toBe('DEU');
@@ -347,15 +361,36 @@ test('country dto has all properties', function () {
     expect($country->currencies->firstWhere('code', 'EUR')->symbol)->toBe('€');
     expect($country->idd->root)->toBe('+4');
     expect($country->idd->getFullCode())->toBe('+49');
-    expect($country->capital)->toBe(['Berlin']);
+
+    // Capital as Collection of Capital objects
+    expect($country->capital)->toBeInstanceOf(Collection::class);
+    expect($country->capital->first())->toBeInstanceOf(Capital::class);
+    expect($country->capital->first()->name)->toBe('Berlin');
+
     expect($country->region)->toBe('Europe');
     expect($country->subregion)->toBe('Western Europe');
-    expect($country->languages)->toBe(['deu' => 'German']);
-    expect($country->latlng)->toBe([51, 9]);
+
+    // Languages as Collection of Language objects
+    expect($country->languages)->toBeInstanceOf(Collection::class);
+    expect($country->languages->first())->toBeInstanceOf(Language::class);
+    expect($country->languages->first()->code)->toBe('deu');
+    expect($country->languages->first()->name)->toBe('German');
+
+    // Coordinates as Coordinates object
+    expect($country->coordinates)->toBeInstanceOf(Coordinates::class);
+    expect($country->coordinates->latitude)->toBe(51.0);
+    expect($country->coordinates->longitude)->toBe(9.0);
     expect($country->getLatitude())->toBe(51.0);
     expect($country->getLongitude())->toBe(9.0);
+
     expect($country->landlocked)->toBeFalse();
-    expect($country->borders)->toBe(['AUT', 'BEL', 'CZE']);
+
+    // Borders as Collection of Border objects
+    expect($country->borders)->toBeInstanceOf(Collection::class);
+    expect($country->borders->first())->toBeInstanceOf(Border::class);
+    expect($country->borders->first()->countryCode)->toBe('AUT');
+    expect($country->borders)->toHaveCount(3);
+
     expect($country->area)->toBe(357114.0);
     expect($country->demonyms)->toBeInstanceOf(Collection::class);
     expect($country->demonyms->firstWhere('language', 'eng')->male)->toBe('German');
@@ -364,17 +399,42 @@ test('country dto has all properties', function () {
     expect($country->flag)->toBe('🇩🇪');
     expect($country->maps->googleMaps)->toBe('https://goo.gl/maps/test');
     expect($country->population)->toBe(83491249);
-    expect($country->gini)->toBe(['2016' => 31.9]);
+
+    // Gini as Collection of Gini objects
+    expect($country->gini)->toBeInstanceOf(Collection::class);
+    expect($country->gini->first())->toBeInstanceOf(Gini::class);
+    expect($country->gini->first()->year)->toBe('2016');
+    expect($country->gini->first()->value)->toBe(31.9);
+
     expect($country->fifa)->toBe('GER');
     expect($country->car->side)->toBe('right');
-    expect($country->timezones)->toBe(['UTC+01:00']);
-    expect($country->continents)->toBe(['Europe']);
+
+    // Timezones as Collection of Timezone objects
+    expect($country->timezones)->toBeInstanceOf(Collection::class);
+    expect($country->timezones->first())->toBeInstanceOf(Timezone::class);
+    expect($country->timezones->first()->value)->toBe('UTC+01:00');
+
+    // Continents as Collection of Continent objects
+    expect($country->continents)->toBeInstanceOf(Collection::class);
+    expect($country->continents->first())->toBeInstanceOf(Continent::class);
+    expect($country->continents->first()->name)->toBe('Europe');
+
     expect($country->flags->png)->toBe('https://flagcdn.com/w320/de.png');
     expect($country->flags->alt)->toBe('The flag of Germany');
     expect($country->coatOfArms->svg)->toBe('https://mainfacts.com/media/images/coats_of_arms/de.svg');
     expect($country->startOfWeek)->toBe('monday');
+
+    // CapitalInfo coordinates
+    expect($country->capitalInfo->coordinates)->toBeInstanceOf(Coordinates::class);
     expect($country->capitalInfo->getLatitude())->toBe(52.52);
+    expect($country->capitalInfo->getLongitude())->toBe(13.4);
+
     expect($country->postalCode->format)->toBe('#####');
+
+    // AltSpellings as Collection of AltSpelling objects
+    expect($country->altSpellings)->toBeInstanceOf(Collection::class);
+    expect($country->altSpellings->first())->toBeInstanceOf(AltSpelling::class);
+    expect($country->altSpellings->first()->name)->toBe('DE');
 });
 
 // CountryField Enum
@@ -408,4 +468,77 @@ test('returns null on exception', function () {
     $restCountries = new RestCountriesClass($client);
 
     expect($restCountries->getAll())->toBeNull();
+});
+
+// New DTO Tests
+test('tld dto works correctly', function () {
+    $tld = Tld::fromString('.br');
+
+    expect($tld->domain)->toBe('.br');
+    expect((string) $tld)->toBe('.br');
+});
+
+test('capital dto works correctly', function () {
+    $capital = Capital::fromString('Brasília');
+
+    expect($capital->name)->toBe('Brasília');
+    expect((string) $capital)->toBe('Brasília');
+});
+
+test('language dto works correctly', function () {
+    $language = Language::fromArray('por', 'Portuguese');
+
+    expect($language->code)->toBe('por');
+    expect($language->name)->toBe('Portuguese');
+});
+
+test('border dto works correctly', function () {
+    $border = Border::fromString('ARG');
+
+    expect($border->countryCode)->toBe('ARG');
+    expect((string) $border)->toBe('ARG');
+});
+
+test('timezone dto works correctly', function () {
+    $timezone = Timezone::fromString('UTC-03:00');
+
+    expect($timezone->value)->toBe('UTC-03:00');
+    expect((string) $timezone)->toBe('UTC-03:00');
+});
+
+test('continent dto works correctly', function () {
+    $continent = Continent::fromString('South America');
+
+    expect($continent->name)->toBe('South America');
+    expect((string) $continent)->toBe('South America');
+});
+
+test('gini dto works correctly', function () {
+    $gini = Gini::fromArray('2019', 53.4);
+
+    expect($gini->year)->toBe('2019');
+    expect($gini->value)->toBe(53.4);
+});
+
+test('alt spelling dto works correctly', function () {
+    $altSpelling = AltSpelling::fromString('Brasil');
+
+    expect($altSpelling->name)->toBe('Brasil');
+    expect((string) $altSpelling)->toBe('Brasil');
+});
+
+test('coordinates dto works correctly', function () {
+    $coordinates = Coordinates::fromArray([-10.0, -55.0]);
+
+    expect($coordinates->latitude)->toBe(-10.0);
+    expect($coordinates->longitude)->toBe(-55.0);
+    expect($coordinates->toArray())->toBe([-10.0, -55.0]);
+});
+
+test('coordinates dto handles empty array', function () {
+    $coordinates = Coordinates::fromArray([]);
+
+    expect($coordinates->latitude)->toBeNull();
+    expect($coordinates->longitude)->toBeNull();
+    expect($coordinates->toArray())->toBe([]);
 });

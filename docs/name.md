@@ -22,6 +22,12 @@ $countries = RestCountries::getByName('germany', [
 
 // May return multiple results
 $countries = RestCountries::getByName('united'); // United States, United Kingdom, etc.
+
+// Accessing results
+foreach ($countries as $country) {
+    echo $country->name->common;
+    echo $country->capital->first()?->name;
+}
 ```
 
 ## Request

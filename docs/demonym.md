@@ -66,3 +66,20 @@ GET https://restcountries.com/v3.1/demonym/german?fields=name,cca2,demonyms
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+
+## Demonym DTO
+
+The `demonyms` property is a `Collection<Demonym>` where each `Demonym` has:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `language` | `string` | Language code (e.g., `eng`, `fra`) |
+| `male` | `string` | Male demonym |
+| `female` | `string` | Female demonym |
+
+```php
+// Example usage
+$country->demonyms->firstWhere('language', 'eng')->male;   // German
+$country->demonyms->firstWhere('language', 'eng')->female; // German
+$country->demonyms->firstWhere('language', 'fra')->male;   // Allemand
+```

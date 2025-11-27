@@ -22,8 +22,14 @@ $countries = RestCountries::getByCurrency('EUR', [
 
 // Iterating over results
 foreach ($countries as $country) {
-    echo $country->name->common . "\n";
+    echo $country->name->common;
+    echo $country->currencies->first()->symbol; // €
 }
+
+// Finding a specific currency
+$euro = $country->currencies->firstWhere('code', 'EUR');
+echo $euro->name;   // Euro
+echo $euro->symbol; // €
 ```
 
 ## Request
@@ -81,3 +87,22 @@ GET https://restcountries.com/v3.1/currency/EUR?fields=name,cca2,currencies
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+- **Count:** 36 countries use Euro
+
+## Currency DTO
+
+The `currencies` property is a `Collection<Currency>` where each `Currency` has:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `code` | `string` | Currency code (e.g., `EUR`, `USD`, `BRL`) |
+| `name` | `string` | Currency name (e.g., `Euro`, `United States dollar`) |
+| `symbol` | `string` | Currency symbol (e.g., `€`, `$`, `R$`) |
+
+```php
+// Example usage
+$country->currencies->first()->code;                 // EUR
+$country->currencies->first()->name;                 // Euro
+$country->currencies->first()->symbol;               // €
+$country->currencies->firstWhere('code', 'EUR')->symbol; // €
+```

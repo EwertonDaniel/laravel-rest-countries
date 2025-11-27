@@ -17,11 +17,18 @@ $countries = RestCountries::getByTranslation('alemanha');
 $countries = RestCountries::getByTranslation('brasil', [
     CountryField::Name,
     CountryField::Cca2,
+    CountryField::Translations,
 ]);
 
 // Search in any language
 $countries = RestCountries::getByTranslation('deutschland'); // German
 $countries = RestCountries::getByTranslation('allemagne');   // French
+
+// Accessing translations
+$country = $countries->first();
+$portuguese = $country->translations->firstWhere('language', 'por');
+echo $portuguese->common;   // Alemanha
+echo $portuguese->official; // República Federal da Alemanha
 ```
 
 ## Request
@@ -54,3 +61,20 @@ GET https://restcountries.com/v3.1/translation/alemanha?fields=name,cca2
 
 - **Type:** `Collection<int, Country>|null`
 - **Description:** Collection of `Country` objects or `null` on error
+
+## Translation DTO
+
+The `translations` property is a `Collection<Translation>` where each `Translation` has:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `language` | `string` | Language code (e.g., `por`, `fra`, `deu`) |
+| `official` | `string` | Official name translation |
+| `common` | `string` | Common name translation |
+
+```php
+// Example usage
+$country->translations->firstWhere('language', 'por')->common;   // Alemanha
+$country->translations->firstWhere('language', 'por')->official; // República Federal da Alemanha
+$country->translations->firstWhere('language', 'fra')->common;   // Allemagne
+```

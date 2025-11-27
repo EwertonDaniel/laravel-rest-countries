@@ -17,10 +17,12 @@ $country = RestCountries::getByFullName('Federal Republic of Germany');
 $country = RestCountries::getByFullName('Federal Republic of Germany', [
     CountryField::Name,
     CountryField::Cca2,
+    CountryField::Capital,
 ]);
 
 // Accessing properties
-echo $country->name->official; // Federal Republic of Germany
+echo $country->name->official;           // Federal Republic of Germany
+echo $country->capital->first()->name;   // Berlin
 ```
 
 ## Request
